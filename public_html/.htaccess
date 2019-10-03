@@ -1,0 +1,36 @@
+AddDefaultCharset UTF-8
+
+php_value display_errors 1
+php_value display_startup_errors 1
+php_value error_reporting E_ALL;
+
+Options -Indexes
+Options -Includes
+Options +FollowSymlinks
+
+RewriteEngine on
+# Перенаправляем с HTTPS на HTTP
+RewriteCond %{SERVER_PORT} ^443$ [OR]
+RewriteCond %{HTTPS} =on
+RewriteRule ^(.*)$ http://%{HTTP_HOST}/$1 [R=301,L]
+
+# Удаление www
+RewriteCond %{HTTP_HOST} ^www\.(.*) [NC]
+RewriteRule ^(.*)$ http://%1/$1 [R=301,L]
+
+# Убираем index.php на конце
+RewriteCond %{REQUEST_URI} ^(.*)/index\.php$
+RewriteRule ^(.*)/?index\.php$ /$1 [R=301,L]
+
+# Убираем повторяющиеся слеши
+RewriteCond %{REQUEST_URI} ^(.*)/{2,}(.*)$
+RewriteRule . %1/%2 [R=301,L]
+
+# Убираем слеши в конце
+RewriteCond %{REQUEST_URI} ^(.*)/$
+RewriteRule . %1 [R=301,L]
+
+# Перенаправляем все запросы на index.php
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule . / [L]
