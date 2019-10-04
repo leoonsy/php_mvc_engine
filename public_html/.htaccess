@@ -9,6 +9,7 @@ Options -Includes
 Options +FollowSymlinks
 
 RewriteEngine on
+RewriteBase /
 # Перенаправляем с HTTPS на HTTP
 RewriteCond %{SERVER_PORT} ^443$ [OR]
 RewriteCond %{HTTPS} =on
@@ -21,13 +22,19 @@ RewriteRule ^(.*)$ http://%1/$1 [R=301,L]
 # Убираем index.php на конце
 RewriteCond %{REQUEST_URI} ^(.*)/index\.php$
 RewriteRule ^(.*)/?index\.php$ /$1 [R=301,L]
-
-# Убираем повторяющиеся слеши
+	
+# Убираем повторяющиеся слеши в корне
+RewriteCond %{THE_REQUEST} \s/{2,}
+RewriteRule (.*) $1 [R=301,L]	
+	
+# Убираем повторяющиеся слеши в URI
 RewriteCond %{REQUEST_URI} ^(.*)/{2,}(.*)$
 RewriteRule . %1/%2 [R=301,L]
 
 # Убираем слеши в конце
 RewriteCond %{REQUEST_URI} ^(.*)/$
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule . %1 [R=301,L]
 
 # Перенаправляем все запросы на index.php
