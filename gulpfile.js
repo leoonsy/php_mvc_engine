@@ -15,6 +15,11 @@ var path = {
     html: '**/[^_]*.+(html|tpl|php)',
     js: '**/[^_]*.js',
     css: '**/[^_]*.+(sass|scss)'
+  },
+  watch: {
+    html: '**/*.+(html|tpl|php)',
+    js: '**/*.js',
+    css: '**/*.+(sass|scss)'   
   }
 };
 
@@ -55,10 +60,10 @@ gulp.task('css:build', function () {
     .pipe(plumber()) // для отслеживания ошибок
     .pipe(sourcemaps.init()) // инициализируем sourcemap
     .pipe(sass()) // scss -> css
-    .pipe(autoprefixer({ //префиксы
-      overrideBrowserslist: ['last 25 versions'],
-      cascade: false
-    }))
+    // .pipe(autoprefixer({ //префиксы
+    //   overrideBrowserslist: ['last 25 versions'],
+    //   cascade: false
+    // }))
     .pipe(cleanCSS()) // минимизируем CSS
     .pipe(sourcemaps.write('./')) // записываем sourcemap
     .pipe(gulp.dest(path.dist[key])) // выгружаем в build
@@ -123,9 +128,9 @@ gulp.task('build',
 
 // запуск задач при изменении файлов
 gulp.task('watch', function () {
-    gulp.watch(path.src[key] + path.type.css, gulp.series('css:build'));
-    gulp.watch(path.src[key] + path.type.js, gulp.series('js:build'));
-    gulp.watch(path.src[key] + path.type.html, gulp.series('html:build'));   
+    gulp.watch(path.src[key] + path.watch.css, gulp.series('css:build'));
+    gulp.watch(path.src[key] + path.watch.js, gulp.series('js:build'));
+    gulp.watch(path.src[key] + path.watch.html, gulp.series('html:build'));   
 });
 // очистка кэша
 gulp.task('cache:clear', async function () {
