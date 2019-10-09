@@ -7,7 +7,7 @@ abstract class Config
 	/**
 	 * Шаблон по умолчанию
 	 */
-	const DEFAULT_LAYOUT = "default";
+	const MAIN_LAYOUT = "main";
 	/**
 	 * Шаблон администратора
 	 */

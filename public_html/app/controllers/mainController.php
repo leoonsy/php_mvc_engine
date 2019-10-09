@@ -2,9 +2,9 @@
 
 namespace app\controllers;
 
-use app\controllers\AbstractDefaultController;
+use app\controllers\AbstractMainController;
 
-class MainController extends AbstractDefaultController
+class MainController extends AbstractMainController
 {
 
 	/**

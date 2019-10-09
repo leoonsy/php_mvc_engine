@@ -30,7 +30,7 @@ abstract class AbstractCodesController extends AbstractController
 		$params = [];
 		$params['header'] = $this->getHeader();
 		$params['content'] = $content;
-		$this->view->render('main', $params);
+		$this->view->renderTemplate($params);
 	}
 
 	/**

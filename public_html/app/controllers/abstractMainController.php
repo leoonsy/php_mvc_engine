@@ -6,7 +6,7 @@ use app\core\View;
 use app\core\AbstractController;
 use app\config\Config;
 
-abstract class AbstractDefaultController extends AbstractController
+abstract class AbstractMainController extends AbstractController
 {
 	/**
 	 * Конструктор
@@ -16,7 +16,7 @@ abstract class AbstractDefaultController extends AbstractController
 	public function __construct($route)
 	{
 		parent::__construct($route);
-		$this->view = new View(Config::DEFAULT_LAYOUT);
+		$this->view = new View(Config::MAIN_LAYOUT);
 	}
 
 	/**
@@ -30,7 +30,7 @@ abstract class AbstractDefaultController extends AbstractController
 		$params = [];
 		$params['header'] = $this->getHeader();
 		$params['content'] = $content;
-		$this->view->render('main', $params);
+		$this->view->renderTemplate($params);
 	}
 
 	/**

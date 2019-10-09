@@ -2,9 +2,9 @@
 
 namespace app\controllers;
 
-use app\controllers\AbstractDefaultController;
+use app\controllers\AbstractMainController;
 
-class AccountController extends AbstractDefaultController {
+class AccountController extends AbstractMainController {
 	
 	/**
 	 * Конструктор

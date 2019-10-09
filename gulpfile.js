@@ -19,7 +19,7 @@ var path = {
   watch: {
     html: '**/*.+(html|tpl|php)',
     js: '**/*.js',
-    css: '**/*.+(sass|scss)'   
+    css: '**/*.+(sass|scss|css)'   
   }
 };
 
@@ -60,10 +60,10 @@ gulp.task('css:build', function () {
     .pipe(plumber()) // для отслеживания ошибок
     .pipe(sourcemaps.init()) // инициализируем sourcemap
     .pipe(sass()) // scss -> css
-    // .pipe(autoprefixer({ //префиксы
-    //   overrideBrowserslist: ['last 25 versions'],
-    //   cascade: false
-    // }))
+    .pipe(autoprefixer({ //префиксы
+      overrideBrowserslist: ['last 25 versions'],
+      cascade: false
+    }))
     .pipe(cleanCSS()) // минимизируем CSS
     .pipe(sourcemaps.write('./')) // записываем sourcemap
     .pipe(gulp.dest(path.dist[key])) // выгружаем в build
