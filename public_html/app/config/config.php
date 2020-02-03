@@ -23,11 +23,11 @@ abstract class Config
 	/**
 	 * Имя пользователя СУБД
 	 */
-	const DB_USER = "leoon";
+	const DB_USER = "dbuser";
 	/**
 	 * Пароль пользователя СУБД
 	 */
-	const DB_PASSWORD = "1762354";
+	const DB_PASSWORD = "1234567";
 	/**
 	 * Имя БД
 	 */
