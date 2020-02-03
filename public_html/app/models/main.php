@@ -13,7 +13,7 @@ class Main extends Model
 	 */
 	public function getNews()
 	{
-		$result = $this->db->rows('SELECT `title`, `description` FROM `news`');
+		$result = $this->db->getAll('SELECT `title`, `description` FROM `news`');
 		return $result;
 	}
 }

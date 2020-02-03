@@ -4,67 +4,128 @@ namespace app\lib;
 
 use PDO;
 use app\config\Config;
-
-class Db {
+class Db
+{
 
 	/**
-	 * Соединение с СУБД
+	 * Объект PDO
 	 *
 	 * @var PDO
 	 */
 	protected $db;
+
 	/**
-	 * Экземпляр данного класса
+	 * Экземпляр класса
 	 *
 	 * @var Db
 	 */
 	protected static $instance;
-	
-	/**
-	 * Undocumented function
-	 *
-	 * @param string $dbHost Название хоста
-	 * @param string $dbUser Имя пользователя
-	 * @param string $dbPassword Пароль пользователя
-	 * @param string $dbName Имя БД
-	 */
-	private function __construct($dbHost, $dbUser, $dbPassword, $dbName) {
-		$this->db = new PDO('mysql:host='.$dbHost.';dbname='.$dbName.';charset=utf8', $dbUser, $dbPassword);
+
+	private function __construct($dbHost, $dbUser, $dbPassword, $dbName)
+	{
+		$this->db = new PDO('mysql:host=' . $dbHost . ';dbname=' . $dbName . ';charset=utf8', $dbUser, $dbPassword);
 	}
 
 	/**
-	 * Получает объект Db
+	 * Получить экземпляр PDO
 	 *
-	 * @return void
+	 * @return Db
 	 */
-	public static function getDBO() {
-		if (self::$instance == null) 
+	public static function getDBO()
+	{
+		if (self::$instance == null) {
 			self::$instance = new Db(Config::DB_HOST, Config::DB_USER, Config::DB_PASSWORD, Config::DB_NAME);
+			self::$instance->setPDOConfig();
+		}
 		return self::$instance;
 	}
 
 	/**
-	 * Выполняет запрос
+	 * Установить конфигурацию PDO
 	 *
-	 * @param string $sql sql-запрос
-	 * @param array $params Переменнные sql-запроса
+	 * @return void
+	 */
+	private function setPDOConfig()
+	{
+		$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	}
+
+	/**
+	 * Выполнить запрос к БД
+	 *
+	 * @param string $sql
+	 * @param array $params
 	 * @return PDOStatement
 	 */
-	public function query($sql, $params = []) {
+	public function query($sql, $params = [])
+	{
 		$stmt = $this->db->prepare($sql);
 		$stmt->execute($params);
 		return $stmt;
 	}
 
 	/**
-	 * Возвращает массив, содержащий все строки набора
+	 * Выбрать все записи
 	 *
-	 * @param [type] $sql
+	 * @param string $sql
 	 * @param array $params
-	 * @return void
+	 * @return array
 	 */
-	public function rows($sql, $params = []) {
+	public function getAll($sql, $params = [])
+	{
 		$result = $this->query($sql, $params);
 		return $result->fetchAll(PDO::FETCH_ASSOC);
+	}
+
+	/**
+	 * Выбрать одну запись
+	 *
+	 * @param string $sql
+	 * @param array $params
+	 * @return array
+	 */
+	public function getFirst($sql, $params = [])
+	{
+		$result = $this->query($sql, $params);
+		return $result->fetch(PDO::FETCH_ASSOC);
+	}
+
+	/**
+	 * Выбрать столбец
+	 *
+	 * @param string $sql
+	 * @param array $params
+	 * @param integer $column
+	 * @return mixed
+	 */
+	public function getColumn($sql, $params = [], $column = 0)
+	{
+		$result = $this->query($sql, $params);
+		return $result->fetchColumn($column);
+	}
+
+	/**
+	 * Получить ID последней вставленной записи
+	 *
+	 * @return int
+	 */
+	public function getLastInsertId()
+	{
+		return $this->db->lastInsertId();
+	}
+
+	/**
+	 * Экранировать спецсимволы
+	 *
+	 * @param string $str
+	 * @param boolean $isWrap
+	 * @return void
+	 */
+	public function quote($str, $isWrap = true)
+	{
+		if ($isWrap)
+			return $this->db->quote($str);
+		else
+			return substr($this->db->quote($str), 1, -1);
 	}
 }

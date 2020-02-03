@@ -1,7 +1,6 @@
 <?php
 
 namespace app\core;
-
 class View
 {
 	public $layout;
@@ -30,7 +29,7 @@ class View
 		echo ob_get_clean();
 	}
 
-		/**
+	/**
 	 * Отрисовывает шаблон
 	 *
 	 * @param string $path Название шаблона

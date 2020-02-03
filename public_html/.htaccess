@@ -18,11 +18,6 @@ ServerSignature Off
 RewriteEngine on
 RewriteBase /
 
-# Перенаправляем с HTTPS на HTTP
-RewriteCond %{SERVER_PORT} ^443$ [OR]
-RewriteCond %{HTTPS} =on
-RewriteRule ^(.*)$ http://%{HTTP_HOST}/$1 [R=301,L]
-
 # Удаление www
 RewriteCond %{HTTP_HOST} ^www\.(.*) [NC]
 RewriteRule ^(.*)$ http://%1/$1 [R=301,L]

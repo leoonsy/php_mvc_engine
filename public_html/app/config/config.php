@@ -35,5 +35,10 @@ abstract class Config
 	/**
 	 * Директория с видами
 	 */
-	const DIR_TMPL = "application/views/dist";
+	const DIR_TMPL = "app/views/dist";
+
+	/**
+	 * Публичная директория с изображениями, скриптами, стилями
+	 */
+	const DIR_PUBLIC = "public/dist";
 }

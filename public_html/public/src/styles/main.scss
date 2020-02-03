@@ -1,3 +1,87 @@
+@import "_variables";
+
+@import "../../../../node_modules/bootstrap/scss/_functions";
+@import "../../../../node_modules/bootstrap/scss/_variables";
+@import "../../../../node_modules/bootstrap/scss/_mixins";
+
+/** Общее **/
 body {
-    padding: 10px;
+  min-width: 240px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+#wrapper {
+  display: flex;
+  flex: 1 1 auto; //for IE10-11 fix footer
+  flex-flow: column nowrap;
+  min-height: 100vh;
+}
+
+#content {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+#footer {
+  flex: 0 0 auto;
+}
+
+a,
+a:active,
+a:link,
+a:visited,
+a:focus {
+  color: $link-color;
+  transition: color 0.3s ease 0s;
+}
+
+a:hover {
+  text-decoration: none;
+  color: $link-hover-color;
+}
+
+/** Навигация **/
+.nav-container {
+  @include make-container();
+  @include make-container-max-widths();
+}
+
+.navbar {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: flex-start;
+  position: relative;
+
+  &__link,
+  &__link:active,
+  &__link:link,
+  &__link:visited,
+  &__link:focus {
+    display: block;
+    padding: 1.8rem 0.5rem 0.2rem;
+    border-top: 2px solid transparent;
+    transition: border 0.3s ease 0s, color 0.3s ease 0s;
+  }
+
+  &__link:hover {
+    border-top: 2px solid $link-hover-color;
+    text-decoration: none;
+    color: $link-hover-color;
+  }
+
+  &__top-menu {
+    display: flex;
+    flex-flow: row nowrap;
+    margin: 0 0 0 auto;
+    list-style: none;
+    padding: 0;
+    text-align: center;
+  }
+
+  &__active {
+    font-weight: 500;
+  }
 }

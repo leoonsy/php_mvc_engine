@@ -22,6 +22,13 @@ abstract class AbstractController
 	public $view;
 
 	/**
+	 * Модель
+	 *
+	 * @var any
+	 */
+	public $model;
+
+	/**
 	 * Массив прав доступа к страницам 
 	 *
 	 * @var array
@@ -48,6 +55,27 @@ abstract class AbstractController
 	 * @var string
 	 */
 	protected $meta_key;
+
+	/**
+	 * Скрипты страницы
+	 *
+	 * @var array
+	 */
+	protected $scripts = [];
+
+	/**
+	 * Стили страницы
+	 *
+	 * @var array
+	 */
+	protected $styles = [];
+
+	/**
+	 * Мета теги
+	 *
+	 * @var array
+	 */
+	protected $meta = [];
 
 	/**
 	 * Конструктор
@@ -87,7 +115,7 @@ abstract class AbstractController
 	 */
 	public function checkAcl()
 	{
-		//TODO: сделать класс User и его юзать для проверок авторизованности
+		//TODO: сделать лучше какой-нибудь класс Account
 		$this->acl = require 'app/acl/' . $this->route['controller'] . '.php';
 
 		if ($this->isAcl('all'))
@@ -120,6 +148,5 @@ abstract class AbstractController
 	{
 		header('location: ' . $url);
 		exit;
-	}
-    
+	} 
 }

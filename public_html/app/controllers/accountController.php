@@ -26,8 +26,13 @@ class AccountController extends AbstractMainController {
 	 * @return void
 	 */
 	public function actionLogin() {
-		$this->title = "Логин";
-		$content = "Тут надо логин";
+		$this->title = 'Логин';
+		$this->meta_desc = 'Описание';
+		$this->meta_key = 'Ключевые слова';
+		$this->scripts = ['jquery-3.4.1.min.js', 'popper.min.js', 'bootstrap.min.js'];
+		$this->styles = ['global:https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap', 'bootstrap.min.css', 'main.min.css'];
+		$this->meta = [];
+		$content = "Форма входа";
 		$this->render($content);
 	}
 
@@ -37,8 +42,13 @@ class AccountController extends AbstractMainController {
 	 * @return void
 	 */
 	public function actionRegister() {
-		$this->title = "Регистрация";
-		$content = "Тут нада регаца";
+		$this->title = 'Регистрация';
+		$this->meta_desc = 'Описание';
+		$this->meta_key = 'Ключевые слова';
+		$this->scripts = ['jquery-3.4.1.min.js', 'popper.min.js', 'bootstrap.min.js'];
+		$this->styles = ['global:https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap', 'bootstrap.min.css', 'main.min.css'];
+		$this->meta = [];
+		$content = "Форма регистрации";
 		$this->render($content);
 	}
 

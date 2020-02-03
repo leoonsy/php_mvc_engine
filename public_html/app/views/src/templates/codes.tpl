@@ -1,11 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <?= $header ?>
+
 <body>
-	Код HTTP.
-	<div id = 'main-content'>
-		<?= $content; ?>
-	</div>
+	<section id="wrapper" class="container-fluid">
+		<div class="error-box">
+			<div class="error-body text-center">
+				<?= $content ?>
+			</div>
+			<footer class="footer text-center"><a href="/">Сайт</a> год</footer>
+		</div>
+	</section>
 </body>
 
 </html>

@@ -29,6 +29,11 @@ class MainController extends AbstractMainController
 	public function actionIndex()
 	{
 		$this->title = 'Главная страница';
+		$this->meta_desc = 'Описание';
+		$this->meta_key = 'Ключевые слова';
+		$this->scripts = ['jquery-3.4.1.min.js', 'popper.min.js', 'bootstrap.min.js'];
+		$this->styles = ['global:https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap', 'bootstrap.min.css', 'main.min.css'];
+		$this->meta = [];
 		$news = $this->model->getNews();
 		$params = [
 			'news' => $news,
@@ -45,6 +50,11 @@ class MainController extends AbstractMainController
 	public function actionNews()
 	{
 		$this->title = 'Новость';
+		$this->meta_desc = 'Описание';
+		$this->meta_key = 'Ключевые слова';
+		$this->scripts = ['jquery-3.4.1.min.js', 'popper.min.js', 'bootstrap.min.js'];
+		$this->styles = ['global:https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap', 'bootstrap.min.css', 'main.min.css'];
+		$this->meta = [];
 		$this->render('Новость №' . $this->route['id'] ?? 0);
 	}
 }

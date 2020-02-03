@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\core\View;
 use app\core\AbstractController;
 use app\config\Config;
+use app\modules\Header;
 
 abstract class AbstractCodesController extends AbstractController
 {
@@ -40,10 +41,12 @@ abstract class AbstractCodesController extends AbstractController
 	 */
 	public function getHeader()
 	{
-		$param = [];
-		$param['title'] = $this->title;
-		$param['meta_desc'] = $this->meta_desc;
-		$param['meta_key'] = $this->meta_key;
-		return $this->view->render('header', $param, true);
+		$params = [];
+		$params['title'] = $this->title;
+		$params['meta_desc'] = $this->meta_desc;
+		$params['meta_key'] = $this->meta_key;
+		$params['styles'] = Header::getStyles($this->styles);
+		$params['altMeta'] = Header::getMeta($this->meta);
+		return $this->view->render(Header::getTmplFile(), $params, true);
 	}
 }
