@@ -31,15 +31,20 @@
     "gulp-scss": "^1.4.0",
     "gulp-sourcemaps": "^2.6.5",
     "gulp-uglify": "^3.0.2",
+    "imagemin-jpeg-recompress": "^6.0.0",
     "imagemin-pngquant": "^8.0.0",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
-    "webpack-stream": "^5.2.1"
+    "webpack-dev-server": "^3.10.3"
+  },
+  "scripts": {
+    "build": "webpack --mode production",
+    "dev": "webpack --mode development",
+    "dev-server": "webpack-dev-server --inline --hot --mode development"
   },
   "dependencies": {
     "jquery": "^3.4.1",
     "popper.js": "^1.15.0",
-    "imagemin-jpeg-recompress": "^6.0.0",
     "bootstrap": "^4.3.1"
   }
 }

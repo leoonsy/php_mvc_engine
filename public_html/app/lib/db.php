@@ -23,7 +23,7 @@ class Db
 
 	private function __construct($dbHost, $dbUser, $dbPassword, $dbName)
 	{
-		$this->db = new PDO('mysql:host=' . $dbHost . ';dbname=' . $dbName . ';charset=utf8', $dbUser, $dbPassword);
+		//$this->db = new PDO('mysql:host=' . $dbHost . ';dbname=' . $dbName . ';charset=utf8', $dbUser, $dbPassword);
 	}
 
 	/**

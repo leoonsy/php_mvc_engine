@@ -2,11 +2,13 @@
 /* пути к исходным файлам (src), к готовым файлам (build), а также к тем, за изменениями которых нужно наблюдать (watch) */
 let path = {
   dist: {
+	root: 'dist/',
     public: 'public_html/public/dist/',
     views: 'public_html/app/views/dist/',
     test: 'public_html/test/dist/',
   },
   src: {
+	root: 'src/',
     public: 'public_html/public/src/',
     views: 'public_html/app/views/src/',
     test: 'public_html/test/src/',
@@ -30,7 +32,7 @@ let path = {
 };
 
 /* подключаем gulp и плагины */
-let gulp = require('gulp'),  // подключаем Gulp
+const gulp = require('gulp'),  // подключаем Gulp
   plumber = require('gulp-plumber'), // модуль для отслеживания ошибок
   rigger = require('gulp-rigger'), // модуль для импорта содержимого одного файла в другой
   sourcemaps = require('gulp-sourcemaps'), // модуль для генерации карты исходных файлов
@@ -44,51 +46,28 @@ let gulp = require('gulp'),  // подключаем Gulp
   htmlmin = require('gulp-htmlmin'), //минификация html
   args = require('yargs').argv, //работа с аргументами
   rename = require('gulp-rename'), //переименование
-  wpStream = require('webpack-stream'), //работа с webpack
-  imagemin = require('gulp-imagemin'),
-  imageminJpegRecompress = require('imagemin-jpeg-recompress'),
-  imageminPngquant = require('imagemin-pngquant');
+  gulpif = require('gulp-if'),
+  imagemin = require('gulp-imagemin'), //сжатие изображений
+  imageminJpegRecompress = require('imagemin-jpeg-recompress'), //сжатие изображений
+  imageminPngquant = require('imagemin-pngquant'), //сжатие изображений
+  browserSync = require('browser-sync').create() //обновление браузера
 
 /* параметры */
-let key = args.key || 'public';
-let modules = args.modules || 'false';
-let mode = args.mode || 'development';
-let wpFile = args.wpFile || 'main.js';
-let wpDistFile = wpFile.replace(/.js$/, '.min.js');
+let key = args.key || 'root',
+  isStream =  (args.stream == 'false') ? false : true,
+  mode = args.mode || 'development',
+  isDev = mode == 'development' ? true : false,
+  isProd = !isDev;
 
-/* конфигурация webpack */
-let wpConfig = {
-  output: {
-    filename: wpDistFile
-  },
-  mode: mode,
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        exclude: /(node_modules)/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env']
-          }
-        }
-      }
-    ]
-  },
-  devtool: mode == 'development' ? 'eval-sourcemap' : false
-}
-
-console.log(key);
 // сбор html
 gulp.task('html:build', function () {
   return gulp.src(path.src[key] + path.type.html) // выбор всех html файлов по указанному пути
     .pipe(plumber()) // отслеживание ошибок
     .pipe(rigger()) // импорт вложений
-    .pipe(htmlmin({
+    .pipe(gulpif(isProd, htmlmin({
       collapseWhitespace: true, // удаляем все переносы
       removeComments: true // удаляем все комментарии
-    }))	
+    })))
     .pipe(gulp.dest(path.dist[key])) // выкладывание готовых файлов
 });
 
@@ -97,13 +76,13 @@ gulp.task('css:build', function () {
   return gulp.src(path.src[key] + path.type.css) // получим все стили css
     .pipe(plumber()) // для отслеживания ошибок
     .pipe(rename({ suffix: ".min" }))
-//    .pipe(sourcemaps.init()) // инициализируем sourcemap
+    .pipe(gulpif(isDev, sourcemaps.init())) // инициализируем sourcemap
     .pipe(autoprefixer({ //префиксы
       overrideBrowserslist: ['last 25 versions'],
       cascade: false
     }))
-    .pipe(cleanCSS()) // минимизируем CSS
-//    .pipe(sourcemaps.write('./')) // записываем sourcemap
+    .pipe(gulpif(isProd, cleanCSS())) // минимизируем CSS
+    .pipe(gulpif(isDev, sourcemaps.write('./'))) // записываем sourcemap
     .pipe(gulp.dest(path.dist[key])) // выгружаем в build
 });
 
@@ -112,24 +91,15 @@ gulp.task('scss:build', function () {
   return gulp.src(path.src[key] + path.type.scss) // получим все стили scss
     .pipe(plumber()) // для отслеживания ошибок
     .pipe(rename({ suffix: ".min" }))
-//    .pipe(sourcemaps.init()) // инициализируем sourcemap
+    .pipe(gulpif(isDev, sourcemaps.init())) // инициализируем sourcemap
     .pipe(sass()) // scss -> css
     .pipe(autoprefixer({ //префиксы
       overrideBrowserslist: ['last 25 versions'],
       cascade: false
     }))
-    .pipe(cleanCSS()) // минимизируем CSS
-//    .pipe(sourcemaps.write('./')) // записываем sourcemap
+    .pipe(gulpif(isProd, cleanCSS())) // минимизируем CSS
+    .pipe(gulpif(isDev, sourcemaps.write('./'))) // записываем sourcemap
     .pipe(gulp.dest(path.dist[key])) // выгружаем в build
-});
-
-// сбор js файла с использованием webpack
-gulp.task('js-w:build', function () {
-  return gulp.src(path.src[key] + wpFile) // получим файл js
-    .pipe(plumber()) // для отслеживания ошибок
-    .pipe(rigger()) // импортируем все указанные файлы js
-    .pipe(wpStream(wpConfig))
-    .pipe(gulp.dest(path.dist[key])) // положим готовый файл
 });
 
 // сбор js
@@ -138,19 +108,19 @@ gulp.task('js:build', function () {
     .pipe(rename({ suffix: ".min" }))
     .pipe(plumber()) // для отслеживания ошибок
     .pipe(rigger()) // импортируем все указанные файлы js
-//    .pipe(sourcemaps.init()) //инициализируем sourcemap
+    .pipe(gulpif(isDev, sourcemaps.init())) //инициализируем sourcemap
     .pipe(babel({
       "presets": [
         [
           "@babel/preset-env",
           {
-            "modules": modules
+            "modules": false
           }
         ]
       ]
     }))
-    .pipe(uglify()) // минимизируем js	
-//    .pipe(sourcemaps.write('./')) //  записываем sourcemap
+    .pipe(gulpif(isProd, uglify())) // минимизируем js	
+    .pipe(gulpif(isDev, sourcemaps.write('./'))) //  записываем sourcemap
     .pipe(gulp.dest(path.dist[key])) // положим готовый файл
 });
 
@@ -158,14 +128,14 @@ gulp.task('js:build', function () {
 gulp.task('img:build', function () {
   return gulp.src(path.src[key] + path.type.img) // получим файлы img
     .pipe(imagemin([
-      imagemin.gifsicle({interlaced: true}),
+      imagemin.gifsicle({ interlaced: true }),
       imageminJpegRecompress({
         progressive: true,
-        max: 90,
-        min: 70
+        max: 80,
+        min: 60
       }),
-      imageminPngquant({quality: [0.7, 0.9]}),
-      imagemin.svgo({plugins: [{removeViewBox: true}]})
+      imageminPngquant({ quality: [0.6, 0.8] }),
+      imagemin.svgo({ plugins: [{ removeViewBox: true }] })
     ]))
     .pipe(gulp.dest(path.dist[key])) // положим файлы 
 });
@@ -257,17 +227,32 @@ gulp.task('build',
   )
 );
 
+gulp.task('serve', function () {
+  if (!isStream)
+    return;
+
+  browserSync.init({
+    server: {
+      baseDir: path.dist[key]
+    }
+  })
+
+  browserSync.watch(path.dist[key] + '**/*.*').on('change', browserSync.reload);
+});
+
 // запуск задач при изменении файлов
-gulp.task('watch', function () {
+gulp.task('watch', gulp.parallel('serve', function () {
   gulp.watch(path.src[key] + path.watch.css, gulp.series('css:build'));
   gulp.watch(path.src[key] + path.watch.scss, gulp.series('scss:build'));
   gulp.watch(path.src[key] + path.watch.js, gulp.series('js:build'));
   gulp.watch(path.src[key] + path.watch.html, gulp.series('html:build'));
   gulp.watch(path.src[key] + path.watch.img, gulp.series('img:build'));
   gulp.watch(path.src[key] + path.watch.other, gulp.series('other:build'));
-});
+}));
 
 // очистка кэша
 gulp.task('cache:clear', async function () {
   cache.clearAll();
 });
+
+gulp.task('default', gulp.series('watch'));
