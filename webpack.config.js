@@ -64,6 +64,9 @@ module.exports = (env, options) => {
                 'vue$': 'vue/dist/vue.esm.js',
             }
         },
+        devServer: {
+            contentBase: path.join(__dirname, 'dist')
+        },
         devtool: isDevelopment ? 'eval-sourcemap' : false
     }
 
